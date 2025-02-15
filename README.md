@@ -19,7 +19,8 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - Aim Method
 - D-Pad Shifting Method
 - DecoupledPitchUIAdjust
-
+- UI Distance
+- UI Size
 ----
 
 
@@ -45,26 +46,40 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 
 ## Other Features
+- Free head/controller movement in main menu/pause menu/inventory/cut-scenes/Interactions
+- All dialogues have free head/controller movement
+- All mid-game mini-cut cams detached from controller
 - Weapon Scale/Angle fixes
-- Aligned weapons for much better accuracy
+- Ingame crosshair reduced to dot
+- Weapon recoil/spread removed
+- Investigation Scanner left eye glitch fixed
+- Aligned weapons for better accuracy
 - Character arms hidden
 - Character arms visible during montages
 - Attached weapons to Right Controller
 - Adjusted weapon positions for better feel
 - Bullet spread reduced when not aiming
 - Movement orientation set to Left Controller (feel free to change)
-- Free head/controller movement in main menu/pause menu/inventory/cut-scenes/Interactions
-- All dialogues have free head/controller movement
-- All mid-game mini-cut cams detached from controller
 - Some cvar tweaks
 - _Much more, .. Too many to list_
 ----
 
 
 ## Important Notes / FAQ's
-:question: _How can I remove the Crosshair_
+:question: _I can not aim during the "Target Practice" and "Weapon Calibration" scenes_
 
-:bulb: The Crosshair can be removed via the in-game settings by settings
+:bulb: You need to aim with your Right Thumb-Stick
+(Investigating options and work-a-rounds)
+
+---
+:question: _The HUD is stcuk to my head during the "Shady Meetup" mission_
+
+:bulb: This is a work-a-round I had to settle for, you can still Aim and Shoot with your Right Motion Controller
+
+---
+:question: _How can I remove the Crosshair COMPLETELY_
+
+:bulb: The Crosshair can be removed via the in-game settings
 
 ---
 
