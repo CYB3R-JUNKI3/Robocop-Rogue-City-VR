@@ -72,7 +72,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 (Investigating options and work-a-rounds)
 
 ---
-:question: _The HUD is stcuk to my head during the "Shady Meetup" mission_
+:question: _The HUD is stuck to my head during the "Shady Meetup" mission_
 
 :bulb: This is a work-a-round I had to settle for, you can still Aim and Shoot with your Right Motion Controller
 
