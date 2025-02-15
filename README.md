@@ -49,13 +49,13 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - Free head/controller movement in main menu/pause menu/inventory/cut-scenes/Interactions
 - All dialogues have free head/controller movement
 - All mid-game mini-cut cams detached from controller
+- Character arms hidden
+- Character arms visible during montages
 - Weapon Scale/Angle fixes
 - Ingame crosshair reduced to dot
 - Weapon recoil/spread removed
 - Investigation Scanner left eye glitch fixed
 - Aligned weapons for better accuracy
-- Character arms hidden
-- Character arms visible during montages
 - Attached weapons to Right Controller
 - Adjusted weapon positions for better feel
 - Bullet spread reduced when not aiming
