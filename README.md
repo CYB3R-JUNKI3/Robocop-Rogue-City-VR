@@ -46,6 +46,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 
 ## Other Features
+- Fixed Shooting Gallery aiming
 - Free head/controller movement in main menu/pause menu/inventory/cut-scenes/Interactions
 - All dialogues have free head/controller movement
 - All mid-game mini-cut cams detached from controller
@@ -66,12 +67,6 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 
 ## Important Notes / FAQ's
-:question: _I can not aim during the "Target Practice" and "Weapon Calibration" scenes_
-
-:bulb: You need to aim with your Right Thumb-Stick
-(Investigating options and work-a-rounds)
-
----
 :question: _The HUD is stuck to my head during the "Shady Meetup" mission_
 
 :bulb: This is a work-a-round I had to settle for, you can still Aim and Shoot with your Right Motion Controller
