@@ -55,6 +55,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - Weapon Scale/Angle fixes
 - Ingame crosshair reduced to dot
 - Weapon recoil/spread removed
+- Camera shake removed
 - Investigation Scanner left eye glitch fixed
 - Aligned weapons for better accuracy
 - Attached weapons to Right Controller
