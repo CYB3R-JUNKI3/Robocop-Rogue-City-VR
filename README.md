@@ -37,6 +37,12 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ----
 
 
+## Punch Gesture
+- Perform a punching action
+- Robo punch will trigger
+####  (In game Punch (Right Grip) still works as intended)
+----
+
 
 ## Recenter/Re-calibrate (standing or sitting)
 - Quickly press Left+Right Trigger during menus/cut-scenes/interactions
@@ -57,7 +63,6 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - Weapon recoil/spread removed
 - Camera shake removed
 - Investigation Scanner left eye glitch fixed
-- Aligned weapons for better accuracy
 - Attached weapons to Right Controller
 - Adjusted weapon positions for better feel
 - Bullet spread reduced when not aiming
@@ -68,6 +73,11 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 
 ## Important Notes / FAQ's
+:question: _Bullets are off if I ADS (Aim Down Sights)_
+
+:bulb: Currently unable to resolve this, however, the In-Game crosshair has been heavily reduced and is still very accurate
+
+---
 :question: _The HUD is stuck to my head during the "Shady Meetup" mission_
 
 :bulb: This is a work-a-round I had to settle for, you can still Aim and Shoot with your Right Motion Controller
