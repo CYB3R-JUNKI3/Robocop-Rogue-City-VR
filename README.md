@@ -16,6 +16,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 # IMPORTANT
 ## The following UEVR settings are controlled by the Mod
+- Rendering Method
 - Aim Method
 - D-Pad Shifting Method
 - DecoupledPitchUIAdjust
@@ -37,10 +38,13 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ----
 
 
-## Punch Gesture
+## Punch / Throw Gesture
 - Perform a punching action
 - Robo punch will trigger
-####  (In game Punch (Right Grip) still works as intended)
+####  (In game Punch/ (Right Grip) still works as intended)
+- Perform a throwing action when holding an item or enemy
+- The item or enemy will be thrown
+####  (In game Throw/ (Right Grip/Right Trigger) still works as intended)
 ----
 
 
