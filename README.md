@@ -42,10 +42,10 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ## Punch / Throw Gesture
 - Perform a punching action
 - Robo punch will trigger
-####  (In game Punch/ (Right Grip) still works as intended)
+####  (In game Punch (Right Grip) still works as intended)
 - Perform a throwing action when holding an item or enemy
 - The item or enemy will be thrown
-####  (In game Throw/ (Right Grip/Right Trigger) still works as intended)
+####  (In game Throw (Right Grip/Right Trigger) still works as intended)
 ----
 
 
@@ -80,7 +80,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ## Important Notes / FAQ's
 :question: _Bullets are off if I ADS (Aim Down Sights)_
 
-:bulb: Currently unable to resolve this, however, the In-Game crosshair has been heavily reduced and is still very accurate
+:bulb: Currently unable to resolve, however, the In-Game crosshair is heavily reduced and still very accurate
 
 ---
 :question: _Sometimes the camera snaps when firing a weapon_
