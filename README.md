@@ -101,7 +101,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 :question: _Some cut-scenes have no subtitles_
 
-:bulb: The UI has been removed for the cut-scenes to remove the black bars, this means that the subtitles for those parts are also invisible
+:bulb: The UI has been removed to remove black bars from cut-scenes, this means that the subtitles for those parts are also invisible
 
 ---
 
