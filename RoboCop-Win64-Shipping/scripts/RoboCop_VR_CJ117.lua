@@ -70,8 +70,7 @@ local act_pan_c = find_required_object("Class /Script/Game.ActionPanelWidget")
 local tut_mesh_c = find_required_object("WidgetBlueprintGeneratedClass /Game/UI/Popups/WB_Tutorial.WB_Tutorial_C")
 local melee_mesh_c = find_required_object("Class /Script/Game.PlayerMeleeWeapon")
 local shady_fix_c = find_required_object("Class /Script/Game.MyGameUserSettings")
-local end_cred_c = find_required_object(
-"WidgetBlueprintGeneratedClass /Game/UI/Popups/Comics/WB_ComicsCard.WB_ComicsCard_C")
+local end_cred_c = find_required_object("WidgetBlueprintGeneratedClass /Game/UI/Popups/Comics/WB_ComicsCard.WB_ComicsCard_C")
 local int_logo_c = find_required_object("Class /Script/UMG.UserWidget")
 
 local function RetRem()
