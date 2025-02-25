@@ -1,0 +1,8 @@
+Renderer_r.HZBOcclusion=0
+Renderer_r.LightCulling.Quality=1
+Renderer_r.Shadow.Virtual.Enable=0
+Renderer_r.SubsurfaceScattering=1
+Renderer_r.TemporalAA.Upsampling=0
+Renderer_r.TranslucentLightingVolume=1
+Renderer_r.Upscale.Quality=2
+Renderer_r.Upscale.Softness=1.000000

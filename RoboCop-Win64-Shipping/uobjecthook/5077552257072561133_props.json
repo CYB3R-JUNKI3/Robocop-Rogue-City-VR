@@ -1,0 +1,28 @@
+{
+    "hide": false,
+    "hide_legacy": false,
+    "path": [
+        "Acknowledged Pawn",
+        "Properties",
+        "Weapon",
+        "Properties",
+        "FPPWeaponConfig",
+        "Properties",
+        "AimingCameraAnimParams"
+    ],
+    "properties": [
+        {
+            "data": 0,
+            "name": "Duration"
+        },
+        {
+            "data": 0,
+            "name": "Rate"
+        },
+        {
+            "data": 0,
+            "name": "Scale"
+        }
+    ],
+    "type": "properties"
+}

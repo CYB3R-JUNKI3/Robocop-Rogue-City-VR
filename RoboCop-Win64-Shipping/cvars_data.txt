@@ -1,0 +1,6 @@
+Engine_r.AllowOcclusionQueries=1
+Engine_r.AmbientOcclusionLevels=-1
+Engine_r.SceneColorFringeQuality=1
+Engine_r.VolumetricCloud=0
+Renderer_r.Tonemapper.Sharpen=1.600000
+Renderer_r.TonemapperGamma=1.700000

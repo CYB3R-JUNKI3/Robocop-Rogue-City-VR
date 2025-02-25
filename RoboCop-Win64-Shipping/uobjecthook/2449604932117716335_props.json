@@ -1,0 +1,42 @@
+{
+    "hide": false,
+    "hide_legacy": false,
+    "path": [
+        "Acknowledged Pawn",
+        "Properties",
+        "Weapon",
+        "Properties",
+        "FPPWeaponConfig"
+    ],
+    "properties": [
+        {
+            "data": 0,
+            "name": "bUseRecoil"
+        },
+        {
+            "data": 0,
+            "name": "bUseSpread"
+        },
+        {
+            "data": 0,
+            "name": "AimingCameraShakeScaleMultiplier"
+        },
+        {
+            "data": 0,
+            "name": "AimingSwayX"
+        },
+        {
+            "data": 0,
+            "name": "FirstShotRecoilMultiplier"
+        },
+        {
+            "data": 0,
+            "name": "FirstShotSpreadIncrease"
+        },
+        {
+            "data": 0,
+            "name": "bSwayWeapon"
+        }
+    ],
+    "type": "properties"
+}

@@ -1,0 +1,20 @@
+{
+    "hide": false,
+    "hide_legacy": false,
+    "path": [
+        "Acknowledged Pawn",
+        "Properties",
+        "CharacterMovement"
+    ],
+    "properties": [
+        {
+            "data": 1,
+            "name": "bUseControllerDesiredRotation"
+        },
+        {
+            "data": 1,
+            "name": "bOrientRotationToMovement"
+        }
+    ],
+    "type": "properties"
+}
