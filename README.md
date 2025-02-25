@@ -18,6 +18,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ## The following UEVR settings are controlled by the Mod
 - Rendering Method
 - Aim Method
+- GhostingFix
 - D-Pad Shifting Method
 - DecoupledPitchUIAdjust
 - UI Distance
@@ -65,8 +66,8 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - Weapon Scale/Angle fixes
 - Ingame crosshair reduced to dot
 - Weapon recoil/spread removed
-- Camera shake removed
-- Investigation Scanner left eye glitch fixed
+- Most camera shake removed
+- Investigation Scanner left eye glitch fixed when NOT holding a weapon
 - Attached weapons to Right Controller
 - Adjusted weapon positions for better feel
 - Bullet spread reduced when not aiming
@@ -80,6 +81,11 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 :question: _Bullets are off if I ADS (Aim Down Sights)_
 
 :bulb: Currently unable to resolve this, however, the In-Game crosshair has been heavily reduced and is still very accurate
+
+---
+:question: _Sometimes the camera snaps when firing a weapon_
+
+:bulb: Although most shake and recoil has been removed, some still remain, will update when fixed
 
 ---
 :question: _The HUD is stuck to my head during the "Shady Meetup" mission_
