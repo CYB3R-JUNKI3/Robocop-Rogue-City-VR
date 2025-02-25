@@ -99,9 +99,9 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 ---
 
-:question: _Some game effects like lense flares are distracting_
+:question: _Some cut-scenes have no subtitles_
 
-:bulb: You can disable Light Shafts and Lens Flares via the in-game settings
+:bulb: The UI has been removed for the cut-scenes, this means that the subtitles for those parts are also invisible
 
 ---
 
