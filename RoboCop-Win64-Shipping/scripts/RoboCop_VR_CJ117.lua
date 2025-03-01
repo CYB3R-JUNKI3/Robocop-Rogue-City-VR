@@ -373,7 +373,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		end
 
 		if not string.find(pawn:get_full_name(), "Starting") then
-			ScaleFix()
+			--ScaleFix()
 			Tuts()
 			RoboEval()
 			if string.find(pawn:get_full_name(), "PoliceStation") then
