@@ -49,6 +49,7 @@ local is_logo = false
 local on_ladder = false
 local is_breach = false
 local is_interact = false
+local is_crosshair_visible = false
 
 local function find_required_object(name)
 	local obj = uevr.api:find_uobject(name)
@@ -73,10 +74,25 @@ local shady_fix_c = find_required_object("Class /Script/Game.MyGameUserSettings"
 local end_cred_c = find_required_object("WidgetBlueprintGeneratedClass /Game/UI/Popups/Comics/WB_ComicsCard.WB_ComicsCard_C")
 local int_logo_c = find_required_object("Class /Script/UMG.UserWidget")
 
+local function ShadyFix()
+	if shady_fix_c ~= nil then
+		local shady_fix = shady_fix_c:get_objects_matching(false)
+
+		for i, mesh in ipairs(shady_fix) do
+			if mesh:get_fname():to_string() == "MyGameUserSettings_0" then
+				crossmesh = mesh
+				is_crosshair_visible = mesh.bCrosshairVisible
+				--print(tostring(mesh:get_full_name()))
+				break
+			end
+		end
+	end
+end
+
 local function RetRem()
 	--FPMesh
 
-	if ret_mesh_c ~= nil then
+	if ret_mesh_c ~= nil and is_crosshair_visible == true then
 		local ret_mesh = ret_mesh_c:get_objects_matching(false)
 
 
@@ -247,21 +263,6 @@ local function Melee()
 	end
 end
 
-local function ShadyFix()
-	if shady_fix_c ~= nil then
-		local shady_fix = shady_fix_c:get_objects_matching(false)
-
-		for i, mesh in ipairs(shady_fix) do
-			if mesh:get_fname():to_string() == "MyGameUserSettings_0" then
-				crossmesh = mesh
-
-				--print(tostring(mesh:get_full_name()))
-				break
-			end
-		end
-	end
-end
-
 local function Tuts()
 	if tut_mesh_c ~= nil then
 		local tut_mesh = tut_mesh_c:get_objects_matching(false)
@@ -323,7 +324,7 @@ params.vr.set_mod_value("VR_GhostingFix", "false")
 params.vr.set_aim_method(0)
 reset_height()
 ResetPlayUI()
-ShadyFix()
+
 local pawn = nil
 
 uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
@@ -353,7 +354,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		is_interact = pawn.PawnInteractionComponent.InteractionTextHidden
 		is_menu = world.AuthorityGameMode.bIsInGameMenuShown
 		shake_obj = pcont.PlayerCameraManager.CachedCameraShakeMod
-
+		ShadyFix()
 		--move_mode = pawn.CharacterMovement.MovementMode
 		--combat_hud = pawn.FPPHudWidget.CombatHUDVisible
 		--interact_attempt = pawn.PawnInteractionComponent.bAttemptingInteraction
@@ -493,7 +494,9 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			ShadyFix()
 			crossmesh.bCrosshairVisible = false
 		else
-			crossmesh.bCrosshairVisible = true
+			if is_crosshair_visible == true then
+				crossmesh.bCrosshairVisible = true
+			end
 			params.vr.set_mod_value("UI_FollowView", "false")
 		end
 
