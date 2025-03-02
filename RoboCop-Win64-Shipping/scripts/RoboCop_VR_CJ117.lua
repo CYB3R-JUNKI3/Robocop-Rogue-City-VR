@@ -49,6 +49,7 @@ local is_logo = false
 local on_ladder = false
 local is_breach = false
 local is_interact = false
+local shady_active = false
 local is_crosshair_visible = false
 
 local function find_required_object(name)
@@ -103,6 +104,11 @@ local function RetRem()
 				mesh.Image_UpLaser.Brush.DrawAs = 0
 				mesh.Image_LeftLaser.Brush.DrawAs = 0
 				mesh.Image_RightLaser.Brush.DrawAs = 0
+
+				if shady_active == true then
+					mesh.Image_CenterDotLaser.Brush.DrawAs = 0
+					mesh.Image_CenterSquareLaser.Brush.DrawAs = 0
+				end
 
 				--print(tostring(mesh:get_full_name()))
 
@@ -492,8 +498,9 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			params.vr.set_mod_value("VR_DecoupledPitchUIAdjust", "true")
 			params.vr.set_mod_value("UI_FollowView", "true")
 			ShadyFix()
-			crossmesh.bCrosshairVisible = false
+			shady_active = true
 		else
+			shady_active = false
 			if is_crosshair_visible == true then
 				crossmesh.bCrosshairVisible = true
 			end
