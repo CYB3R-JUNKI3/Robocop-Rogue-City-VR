@@ -57,6 +57,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 
 
 ## Other Features
+- ADS now MUCH more accurate 
 - Fixed Shooting Gallery aiming
 - Free head/controller movement in main menu/pause menu/inventory/cut-scenes/Interactions
 - All dialogues have free head/controller movement
@@ -76,13 +77,11 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - _Much more, .. Too many to list_
 ----
 
+### BIG Thanks and credit to gwizdek for help with fixing weapon scale and ADS :heart:  :pray: 
+
+----
 
 ## Important Notes / FAQ's
-:question: _Bullets are off if I ADS (Aim Down Sights)_
-
-:bulb: Currently unable to resolve, however, the In-Game crosshair is heavily reduced and still very accurate
-
----
 :question: _Sometimes the camera snaps when firing a weapon_
 
 :bulb: Although most shake and recoil has been removed, some still remain, will update when fixed
