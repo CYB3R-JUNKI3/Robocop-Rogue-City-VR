@@ -61,6 +61,11 @@ local function find_required_object(name)
 	return obj
 end
 
+local find_static_class = function(name)
+	local c = find_required_object(name)
+	return c:get_class_default_object()
+end
+
 local ret_mesh_c = find_required_object("Class /Script/Game.ReticleLaserWidget")
 local rot_mod_c = find_required_object("Class /Script/Game.RotationLimitCameraModifier")
 local cam_man_c = find_required_object("Class /Script/Game.MyPlayerCameraManager")
@@ -215,33 +220,16 @@ local function ScaleFix()
 	if Playing == true and sactive_weap ~= nil and not string.find(sactive_weap:get_full_name(), "NoWeapon") then
 		local vpawn = api:get_local_pawn(0)
 		if vpawn ~= nil then
-			weap_scale = vpawn.Weapon.WeaponMesh.RelativeScale3D
-		end
+			local materials = vpawn.Weapon.WeaponMesh.OverrideMaterials
 
-		local right_controller_index = params.vr.get_right_controller_index()
-		local right_controller_position = UEVR_Vector3f.new()
-		local right_controller_rotation = UEVR_Quaternionf.new()
-		params.vr.get_pose(right_controller_index, right_controller_position, right_controller_rotation)
-		local RControllerRot = right_controller_rotation.y
-		local RControllerRotX = right_controller_rotation.x
-		--print("Rotation X : " .. tostring(right_controller_rotation.x) .. "Rotation Y : " .. tostring(right_controller_rotation.y))
-		--print("Rotation Y : " .. tostring(right_controller_rotation.y))
-		--local LockLoc = nil
-
-		if RControllerRotX < -0.0 then
-			weap_scale.Y = (1.40 - RControllerRotX * -0.50)
-		elseif RControllerRotX > 0.0 then
-			weap_scale.Y = 1.40 - string.gsub((RControllerRotX * 0.50), "-", "")
-		else
-			weap_scale.Y = 1.30
-		end
-
-		if RControllerRot > 0.0 then
-			weap_scale.Y = (1.20 - RControllerRot * 0.50)
-		elseif RControllerRot < -0.0 then
-			weap_scale.Y = 1.20 - string.gsub((RControllerRot * 0.50), "-", "")
-		else
-			--weap_scale.Y = 1.30
+			for i, material in ipairs(materials) do
+				if (string.find(material:get_full_name(), "_Panini") ~= nil) then
+					--print(tostring(material:get_full_name()))
+					sactive_weap.WeaponMesh:SetMaterial(0, material.Parent)
+					sactive_weap.WeaponMesh:SetMaterial(1, material.Parent)
+					sactive_weap.WeaponMesh:SetMaterial(2, material.Parent)
+				end
+			end
 		end
 	end
 end
@@ -517,53 +505,56 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 				weap_loc = UEVR_UObjectHook.remove_motion_controller_state(cur_weap)
 				weap_loc = UEVR_UObjectHook.get_or_add_motion_controller_state(cur_weap)
 				if string.find(cur_weap:get_full_name(), "BerettaAuto") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.000, -4.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "SmgUZI") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.000, -4.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "SigSauer") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.000, -4.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "AKM") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-7.500, -5.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-7.500, -7.500, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "Mossberg") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(0.000, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "HK21") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "BrowningM60") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "DesertEagle") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.000, -4.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "ATGM") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "IntraTec") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "SteyrAUG") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "HKG11") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "Spas12") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(0.000, -5.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-2.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "MM1GL") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "Sniper") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
 					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "BarrettM82") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.580, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
+				elseif string.find(cur_weap:get_full_name(), "SterlingMk6") then
+					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+					weap_loc:set_location_offset(Vector3f.new(0.00, -5.00, 0.000))
 				end
 			end
 

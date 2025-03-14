@@ -1,4 +1,3 @@
-r.BloomQuality 0
 r.MotionBlurQuality 0
 r.DefaultFeature.MotionBlur 0
 r.DepthOfFieldQuality 0
