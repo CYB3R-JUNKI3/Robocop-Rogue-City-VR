@@ -23,6 +23,7 @@ local is_running = false
 local is_scanning = false
 local weap_loc = nil
 local active_weap = nil
+local active_weap_name = "None"
 local cur_weap = nil
 local seq_active = false
 local cut_paused = false
@@ -51,6 +52,9 @@ local is_breach = false
 local is_interact = false
 local shady_active = false
 local is_crosshair_visible = false
+local pause_time = 0
+local alt_time = 0
+local is_false = 0
 
 local function find_required_object(name)
 	local obj = uevr.api:find_uobject(name)
@@ -61,64 +65,47 @@ local function find_required_object(name)
 	return obj
 end
 
-local find_static_class = function(name)
-	local c = find_required_object(name)
-	return c:get_class_default_object()
-end
-
-local ret_mesh_c = find_required_object("Class /Script/Game.ReticleLaserWidget")
 local rot_mod_c = find_required_object("Class /Script/Game.RotationLimitCameraModifier")
-local cam_man_c = find_required_object("Class /Script/Game.MyPlayerCameraManager")
-local gal_cheat_c = find_required_object("Class /Script/Engine.Actor")
-local seq_play_c = find_required_object("Class /Script/LevelSequence.LevelSequencePlayer")
-local robo_eval_c = find_required_object("Class /Script/Game.MenuWindowUserWidget")
-local robo_line_c = find_required_object("Class /Script/UMG.UserWidget")
-local act_pan_c = find_required_object("Class /Script/Game.ActionPanelWidget")
-local tut_mesh_c = find_required_object("WidgetBlueprintGeneratedClass /Game/UI/Popups/WB_Tutorial.WB_Tutorial_C")
-local melee_mesh_c = find_required_object("Class /Script/Game.PlayerMeleeWeapon")
-local shady_fix_c = find_required_object("Class /Script/Game.MyGameUserSettings")
 local end_cred_c = find_required_object("WidgetBlueprintGeneratedClass /Game/UI/Popups/Comics/WB_ComicsCard.WB_ComicsCard_C")
 local int_logo_c = find_required_object("Class /Script/UMG.UserWidget")
+local game_engine_class = find_required_object("Class /Script/Engine.GameEngine")
+local melee_mesh_c = find_required_object("Class /Script/Game.PlayerMeleeWeapon")
 
 local function ShadyFix()
-	if shady_fix_c ~= nil then
-		local shady_fix = shady_fix_c:get_objects_matching(false)
+	local game_engine = UEVR_UObjectHook.get_first_object_by_class(game_engine_class)
 
-		for i, mesh in ipairs(shady_fix) do
-			if mesh:get_fname():to_string() == "MyGameUserSettings_0" then
-				crossmesh = mesh
-				is_crosshair_visible = mesh.bCrosshairVisible
-				--print(tostring(mesh:get_full_name()))
-				break
-			end
+	local viewport = game_engine.GameViewport
+	if viewport == nil then
+		return
+	end
+
+	local world = viewport.World
+
+	local mg_mesh_c = world.OwningGameInstance:get_outer()
+	if mg_mesh_c ~= nil then
+		local mg_mesh = mg_mesh_c.GameUserSettings
+
+		if mg_mesh ~= nil then
+			crossmesh = mg_mesh
+			is_crosshair_visible = mg_mesh.bCrosshairVisible
 		end
 	end
 end
 
 local function RetRem()
-	--FPMesh
+	--RetMesh
+	local rpawn = api:get_local_pawn(0)
+	local ret_mesh = rpawn.FPPHudWidget.CurrentReticle
 
-	if ret_mesh_c ~= nil and is_crosshair_visible == true then
-		local ret_mesh = ret_mesh_c:get_objects_matching(false)
+	if ret_mesh ~= nil and is_crosshair_visible == true then
+		ret_mesh.Image_DownLaser.Brush.DrawAs = 0
+		ret_mesh.Image_UpLaser.Brush.DrawAs = 0
+		ret_mesh.Image_LeftLaser.Brush.DrawAs = 0
+		ret_mesh.Image_RightLaser.Brush.DrawAs = 0
 
-
-		for i, mesh in ipairs(ret_mesh) do
-			--print(tostring(mesh:get_full_name()))
-			if string.find(mesh:get_fname():to_string(), "WB_ReticleLaser_C") then
-				mesh.Image_DownLaser.Brush.DrawAs = 0
-				mesh.Image_UpLaser.Brush.DrawAs = 0
-				mesh.Image_LeftLaser.Brush.DrawAs = 0
-				mesh.Image_RightLaser.Brush.DrawAs = 0
-
-				if shady_active == true then
-					mesh.Image_CenterDotLaser.Brush.DrawAs = 0
-					mesh.Image_CenterSquareLaser.Brush.DrawAs = 0
-				end
-
-				--print(tostring(mesh:get_full_name()))
-
-				--break
-			end
+		if shady_active == true then
+			ret_mesh.Image_CenterDotLaser.Brush.DrawAs = 0
+			ret_mesh.Image_CenterSquareLaser.Brush.DrawAs = 0
 		end
 	end
 end
@@ -142,28 +129,6 @@ local function GalleryFix()
 	end
 end
 
-local function GalleryShake()
-	--FPMesh
-	local wpawn = api:get_local_pawn(0)
-	local cur_weap = wpawn.Weapon.WeaponMesh
-
-	if cam_man_c ~= nil then
-		local cam_man = cam_man_c:get_objects_matching(false)
-
-
-		for i, mesh in ipairs(cam_man) do
-			--print(tostring(mesh:get_full_name()))
-			if mesh:get_fname():to_string() == "MyPlayerCameraManager_0" then
-				mesh.CachedCameraShakeMod:DisableModifier(Disable)
-
-				--print(tostring(mesh:get_full_name()))
-
-				break
-			end
-		end
-	end
-end
-
 local function reset_height()
 	local base = UEVR_Vector3f.new()
 	params.vr.get_standing_origin(base)
@@ -175,17 +140,9 @@ local function reset_height()
 	base.y = hmd_pos.y
 	base.z = hmd_pos.z
 	params.vr.set_standing_origin(base)
-	if hmd_pos.y >= 0.4 then
-		InitLocY = 0.30
-	else
-		InitLocY = -0.10
-	end
 end
 
 local function ResetPlayUI()
-	--params.vr.set_mod_value("VR_CameraForwardOffset", "0.00")
-	--params.vr.set_mod_value("VR_CameraUpOffset", "0.00")
-	--params.vr.set_mod_value("VR_CameraRightOffset", "0.00")
 	params.vr.set_mod_value("VR_EnableGUI", "true")
 	params.vr.set_mod_value("VR_DecoupledPitchUIAdjust", "true")
 	params.vr.set_mod_value("UI_Distance", "8.500")
@@ -195,21 +152,36 @@ local function ResetPlayUI()
 	params.vr.set_mod_value("VR_DPadShiftingMethod", "0")
 end
 
-local function RoboEval()
-	if robo_line_c ~= nil then
-		local robo_line = robo_line_c:get_objects_matching(false)
+local function Tut_Eval_Check()
+	local game_engine = UEVR_UObjectHook.get_first_object_by_class(game_engine_class)
 
+	local viewport = game_engine.GameViewport
+	if viewport == nil then
+		print("Viewport is nil")
+		return
+	end
 
-		for i, mesh in ipairs(robo_line) do
-			--print(tostring(mesh:get_full_name()))
-			if string.find(mesh:get_fname():to_string(), "AllCompletedText") and string.find(mesh:get_full_name(), "Transient.GameEngine")
-				or string.find(mesh:get_fname():to_string(), "WB_RobocopEvaluationLine_C_") and string.find(mesh:get_full_name(), "Transient.GameEngine") then
-				--print(tostring(mesh:get_full_name()))
+	world = viewport.World
+
+	if world.AuthorityGameMode ~= nil then
+		pause_time = world.GameState.ReplicatedWorldTimeSecondsDouble
+		--print(pause_time)
+		--print(alt_time)
+		if pause_time == alt_time then
+			is_false = is_false + 1
+			if is_false > 30 then
+				is_paused = true
+				--is_tut = true
 				eval_active = true
-				--params.vr.set_mod_value("VR_EnableGUI", "true")
-			else
-				--eval_active = false
+				--print("Paused")	
+				--print("Paused")
+				--print(is_false)
 			end
+		else
+			is_false = 0
+			is_paused = false
+			eval_active = false
+			--print("Playing")
 		end
 	end
 end
@@ -218,9 +190,9 @@ local function ScaleFix()
 	local spawn = api:get_local_pawn(0)
 	local sactive_weap = spawn.Weapon
 	if Playing == true and sactive_weap ~= nil and not string.find(sactive_weap:get_full_name(), "NoWeapon") then
-		local vpawn = api:get_local_pawn(0)
-		if vpawn ~= nil then
-			local materials = vpawn.Weapon.WeaponMesh.OverrideMaterials
+		--local vpawn = api:get_local_pawn(0)
+		if spawn ~= nil then
+			local materials = spawn.Weapon.WeaponMesh.OverrideMaterials
 
 			for i, material in ipairs(materials) do
 				if (string.find(material:get_full_name(), "_Panini") ~= nil) then
@@ -239,12 +211,10 @@ local function Melee()
 		local melee_mesh = melee_mesh_c:get_objects_matching(false)
 
 		for i, mesh in ipairs(melee_mesh) do
-			--print(tostring(mesh:get_full_name()))
 			if string.find(mesh:get_fname():to_string(), "WP_MeleeWeapon_C_") then
 				if mesh.bHidden == false then
 					is_punch = true
 					params.vr.set_mod_value("VR_EnableGUI", "true")
-					--print(tostring(mesh:get_full_name()))
 
 					break
 				else
@@ -252,23 +222,6 @@ local function Melee()
 				end
 			else
 				is_punch = false
-			end
-		end
-	end
-end
-
-local function Tuts()
-	if tut_mesh_c ~= nil then
-		local tut_mesh = tut_mesh_c:get_objects_matching(false)
-
-		for i, mesh in ipairs(tut_mesh) do
-			if string.find(mesh:get_fname():to_string(), "WB_Tutorial_") and string.find(mesh:get_full_name(), "Transient.GameEngine") then
-				is_tut = true
-				--print(tostring(mesh:get_full_name()))
-
-				break
-			else
-				is_tut = false
 			end
 		end
 	end
@@ -322,19 +275,17 @@ ResetPlayUI()
 local pawn = nil
 
 uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
-	local game_engine_class = api:find_uobject("Class /Script/Engine.GameEngine")
 	local game_engine = UEVR_UObjectHook.get_first_object_by_class(game_engine_class)
 
 	local viewport = game_engine.GameViewport
 	if viewport == nil then
-		print("Viewport is nil")
 		return
 	end
 
 	local world = viewport.World
+
 	pawn = api:get_local_pawn(0)
 	local pcont = api:get_player_controller(0)
-	local GetPawn = pawn:get_full_name()
 
 	if pawn ~= nil then
 		active_weap = pawn.Weapon
@@ -349,9 +300,11 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		is_menu = world.AuthorityGameMode.bIsInGameMenuShown
 		shake_obj = pcont.PlayerCameraManager.CachedCameraShakeMod
 		ShadyFix()
-		--move_mode = pawn.CharacterMovement.MovementMode
-		--combat_hud = pawn.FPPHudWidget.CombatHUDVisible
-		--interact_attempt = pawn.PawnInteractionComponent.bAttemptingInteraction
+
+
+		if active_weap ~= nil then
+			active_weap_name = active_weap:get_full_name()
+		end
 
 		if pawn.BreachOverlapActor ~= nil then
 			if string.find(pawn.BreachOverlapActor:get_full_name(), "BP_Ladder_C") then
@@ -368,13 +321,11 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		end
 
 		if not string.find(pawn:get_full_name(), "Starting") then
-			ScaleFix()
-			Tuts()
-			RoboEval()
+			Tut_Eval_Check()
+
 			if string.find(pawn:get_full_name(), "PoliceStation") then
 				if is_input == false then
 					GalleryFix()
-					RetRem()
 				end
 			end
 
@@ -396,11 +347,8 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 				elseif is_input == true and is_view == true then
 					params.vr.set_mod_value("VR_EnableGUI", "true")
 					is_tut = false
-					eval_active = false
 				end
 			end
-
-			IntroLogo()
 
 			if is_mouse == true then
 				params.vr.set_mod_value("VR_EnableGUI", "true")
@@ -430,6 +378,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			params.vr.set_aim_method(0)
 		end
 
+		IntroLogo()
 		if cut_paused == true or string.find(pawn:get_full_name(), "Starting") or eval_active == true or panel_active == true or is_mouse == true or detective == true or is_input == true or is_menu == true or is_end == true or is_tut == true or is_logo == true and seq_active == false then
 			if string.find(pawn:get_full_name(), "Starting") or is_mouse == true or eval_active == true or is_end == true or is_tut == true then
 				if interact_with == nil then
@@ -451,7 +400,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 				end
 			else
 				params.vr.set_mod_value("VR_DecoupledPitchUIAdjust", "true")
-				if is_logo == true then
+				if is_logo == true or eval_active == true and interact_with == nil then
 					params.vr.set_mod_value("UI_Distance", "8.500")
 					params.vr.set_mod_value("UI_Size", "7.50")
 				else
@@ -468,12 +417,17 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		if is_input == false and is_breach == true then
 			pawn.Mesh:call("SetRenderInMainPass", true)
 		end
+
+		if eval_active == true then
+			params.vr.set_mod_value("VR_EnableGUI", "true")
+		end
 	else
 		if Playing == false then
 			print("Playing")
 			Mactive = false
 			Playing = true
 			mDB = false
+
 			ResetPlayUI()
 			params.vr.set_mod_value("VR_GhostingFix", "true")
 			UEVR_UObjectHook.set_disabled(false)
@@ -498,6 +452,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		if active_weap ~= nil and cur_weap ~= nil and not string.find(active_weap:get_full_name(), "NoWeapon") then
 			weap_loc = UEVR_UObjectHook.get_or_add_motion_controller_state(cur_weap)
 			RetRem()
+			ScaleFix()
 
 			if Playing == true then
 				weap_loc:set_hand(1)
@@ -558,6 +513,12 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 				end
 			end
 
+			if eval_active == true then
+				params.vr.set_aim_method(0)
+			else
+				params.vr.set_aim_method(2)
+			end
+
 			if Playing == true and not string.find(active_weap:get_full_name(), "NoWeapon") then
 				local right_controller_index = params.vr.get_right_controller_index()
 				local right_controller_position = UEVR_Vector3f.new()
@@ -610,6 +571,8 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			end
 		end
 	end
+
+	alt_time = world.GameState.ReplicatedWorldTimeSecondsDouble
 end)
 
 
@@ -672,7 +635,7 @@ uevr.sdk.callbacks.on_xinput_get_state(function(retval, user_index, state)
 		end
 
 		if pawn ~= nil then
-			if active_weap == nil or string.find(active_weap:get_full_name(), "NoWeapon") then
+			if active_weap == nil or string.find(active_weap_name, "NoWeapon") then
 				if Playing == true then
 					if state.Gamepad.bLeftTrigger ~= 0 then
 						if det_enable == false then
