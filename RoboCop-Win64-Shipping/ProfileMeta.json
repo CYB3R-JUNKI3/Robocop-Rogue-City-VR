@@ -1,0 +1,12 @@
+{
+  "ID": "00000000-0000-0000-0000-000000000000",
+  "exeName": "RoboCop-Win64-Shipping",
+  "gameName": "Robocop Rogue City",
+  "gameVersion": "Latest",
+  "authorName": "CJ117",
+  "minUEVRVersionDay": "2024-10-31T00:00:00",
+  "nullifyPlugins": false,
+  "lateInjection": false,
+  "modifiedDate": "2025-03-17T00:00:00+01:00",
+  "remarks": "6DOF Motion Controller UEVR Profile + VR Fix Mod"
+}
