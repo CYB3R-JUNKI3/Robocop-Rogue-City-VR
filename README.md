@@ -4,6 +4,10 @@
 ## Requires UEVR 1.05 (or Nightly)
 https://github.com/praydog/UEVR
 
+> [!WARNING]
+> Nightly versions 1041 and 1042 have been reported to cause crashing.
+
+
 ---
 
 # Installation
