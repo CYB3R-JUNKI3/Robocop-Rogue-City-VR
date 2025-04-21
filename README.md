@@ -119,7 +119,7 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ## Important Notes / FAQ's
 :question: _Game crashes when Left Trigger is pressed when NOT holding a weapon_
 
-:bulb: Disable the "Scan Fix" ([see Customizations](https://github.com/CYB3R-JUNKI3/Robocop-Rogue-City-VR/edit/main/README.md#customizations))
+:bulb: Disable the "Scan Fix" ([see Customizations](https://github.com/CYB3R-JUNKI3/Robocop-Rogue-City-VR/tree/main#customizations))
 
 ---
 :question: _Sometimes the camera snaps when firing a weapon_
