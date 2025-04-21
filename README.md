@@ -29,7 +29,38 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 - UI Size
 ----
 
+## Customizations
+#### Custom UEVR D-Pad Activation Method
 
+<details>
+
+<summary>How to configure custom UEVR D-Pad activation </summary>
+
+1)  Open the file "RoboCop-Win64-Shipping\scripts\RoboCop_VR_CJ117.lua" with any text editor
+2)  Go to line 13 ("local D_Pad_Method = 0")
+3)  Change "0" to reflect the UEVR D-Pad activation method you wish to use.
+```
+-- 0 = Right Thumbrest + Left Joystick
+-- 1 = Left Thumbrest + Right Joystick
+-- 4 = Gesture (Head) + Left Joystick
+-- 5 = Gesture (Head) + Right Joystick
+```
+4)  Save the file.
+</details>
+
+#### Enable/Disable "Scan Fix"
+
+<details>
+
+<summary>How to Enable/Disable Scan Fix </summary>
+
+1)  Open the file "RoboCop-Win64-Shipping\scripts\RoboCop_VR_CJ117.lua" with any text editor
+2)  Go to line 14 ("local Enable_Scan_Fix = true")
+3)  Change "true" to "false" (case sensitive) to DIS-able the Scan Fix.
+4)  Save the file.
+</details>
+
+----
 
 ## Controls
 - No change to game controls
@@ -86,6 +117,11 @@ All installation info is <a href="https://github.com/CYB3R-JUNKI3/Robocop-Rogue-
 ----
 
 ## Important Notes / FAQ's
+:question: _Game crashes when Left Trigger is pressed when NOT holding a weapon_
+
+:bulb: Disable the "Scan Fix" ([see Customizations](https://github.com/CYB3R-JUNKI3/Robocop-Rogue-City-VR/edit/main/README.md#customizations))
+
+---
 :question: _Sometimes the camera snaps when firing a weapon_
 
 :bulb: Although most shake and recoil has been removed, some still remain, will update when fixed
