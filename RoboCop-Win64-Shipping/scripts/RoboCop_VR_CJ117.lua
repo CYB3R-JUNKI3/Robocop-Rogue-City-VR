@@ -2,6 +2,19 @@
 --# RoboCop Vr Fix - CJ117 #
 --##########################
 
+--########################
+--# D_Pad_Method Options #
+--########################
+-- 0 = Right Thumbrest + Left Joystick
+-- 1 = Left Thumbrest + Right Joystick
+-- 4 = Gesture (Head) + Left Joystick
+-- 5 = Gesture (Head) + Right Joystick
+
+local D_Pad_Method = 0
+local Enable_Scan_Fix = true
+
+--# Do Not Edit Below This Line #
+
 local api = uevr.api
 local params = uevr.params
 local callbacks = params.sdk.callbacks
@@ -55,6 +68,7 @@ local is_crosshair_visible = false
 local pause_time = 0
 local alt_time = 0
 local is_false = 0
+local last_weapon = nil
 
 local function find_required_object(name)
 	local obj = uevr.api:find_uobject(name)
@@ -76,6 +90,7 @@ local function ShadyFix()
 
 	local viewport = game_engine.GameViewport
 	if viewport == nil then
+
 		return
 	end
 
@@ -89,7 +104,7 @@ local function ShadyFix()
 			crossmesh = mg_mesh
 			is_crosshair_visible = mg_mesh.bCrosshairVisible
 		end
-	end
+	end	
 end
 
 local function RetRem()
@@ -107,7 +122,7 @@ local function RetRem()
 			ret_mesh.Image_CenterDotLaser.Brush.DrawAs = 0
 			ret_mesh.Image_CenterSquareLaser.Brush.DrawAs = 0
 		end
-	end
+	end	
 end
 
 local function GalleryFix()
@@ -149,26 +164,27 @@ local function ResetPlayUI()
 	params.vr.set_mod_value("UI_Size", "7.50")
 	params.vr.set_mod_value("UI_X_Offset", "0.00")
 	params.vr.set_mod_value("UI_Y_Offset", "0.00")
-	params.vr.set_mod_value("VR_DPadShiftingMethod", "0")
+	params.vr.set_mod_value("VR_DPadShiftingMethod", D_Pad_Method)
 end
 
 local function Tut_Eval_Check()
+	
 	local game_engine = UEVR_UObjectHook.get_first_object_by_class(game_engine_class)
 
 	local viewport = game_engine.GameViewport
-	if viewport == nil then
+	if viewport == nil then 
 		print("Viewport is nil")
 		return
 	end
-
+	
 	world = viewport.World
-
+	
 	if world.AuthorityGameMode ~= nil then
 		pause_time = world.GameState.ReplicatedWorldTimeSecondsDouble
 		--print(pause_time)
 		--print(alt_time)
 		if pause_time == alt_time then
-			is_false = is_false + 1
+			is_false = is_false+1
 			if is_false > 30 then
 				is_paused = true
 				--is_tut = true
@@ -189,19 +205,22 @@ end
 local function ScaleFix()
 	local spawn = api:get_local_pawn(0)
 	local sactive_weap = spawn.Weapon
-	if Playing == true and sactive_weap ~= nil and not string.find(sactive_weap:get_full_name(), "NoWeapon") then
-		--local vpawn = api:get_local_pawn(0)
-		if spawn ~= nil then
-			local materials = spawn.Weapon.WeaponMesh.OverrideMaterials
+	if Playing == true and sactive_weap ~= nil then
 
-			for i, material in ipairs(materials) do
-				if (string.find(material:get_full_name(), "_Panini") ~= nil) then
-					--print(tostring(material:get_full_name()))
-					sactive_weap.WeaponMesh:SetMaterial(0, material.Parent)
-					sactive_weap.WeaponMesh:SetMaterial(1, material.Parent)
-					sactive_weap.WeaponMesh:SetMaterial(2, material.Parent)
-				end
+		if spawn ~= nil then
+			
+			local materials = sactive_weap.WeaponMesh.OverrideMaterials
+			local mat_num = #materials
+			--print(mat_num)
+
+			for i=1, mat_num do
+				
+				local d_material = sactive_weap.WeaponMesh:CreateAndSetMaterialInstanceDynamicFromMaterial(i-1, sactive_weap.WeaponMesh.OverrideMaterials[i])
+				d_material:SetScalarParameterValue("UsePanini", 0.0)
+				--print(i)
+				
 			end
+			
 		end
 	end
 end
@@ -224,7 +243,7 @@ local function Melee()
 				is_punch = false
 			end
 		end
-	end
+	end	
 end
 
 local function EndCredits()
@@ -273,12 +292,15 @@ reset_height()
 ResetPlayUI()
 
 local pawn = nil
+local sactive_mesh = nil
 
 uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
+	
 	local game_engine = UEVR_UObjectHook.get_first_object_by_class(game_engine_class)
 
 	local viewport = game_engine.GameViewport
 	if viewport == nil then
+
 		return
 	end
 
@@ -289,6 +311,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 
 	if pawn ~= nil then
 		active_weap = pawn.Weapon
+		sactive_mesh = pawn.Mesh
 		is_mouse = pcont.bShowMouseCursor
 		is_hidden = pawn.bHidden
 		is_load = pawn.bNetLoadOnClient
@@ -301,7 +324,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		shake_obj = pcont.PlayerCameraManager.CachedCameraShakeMod
 		ShadyFix()
 
-
+		
 		if active_weap ~= nil then
 			active_weap_name = active_weap:get_full_name()
 		end
@@ -321,6 +344,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		end
 
 		if not string.find(pawn:get_full_name(), "Starting") then
+
 			Tut_Eval_Check()
 
 			if string.find(pawn:get_full_name(), "PoliceStation") then
@@ -362,6 +386,15 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		if pawn.Weapon ~= nil and active_weap ~= nil then
 			if not string.find(active_weap:get_full_name(), "NoWeapon") then
 				cur_weap = pawn.Weapon.WeaponMesh
+				if cur_weap == last_weapon then 
+				
+				else
+					local u_exist = UEVR_UObjectHook.exists(last_weapon)
+					if u_exist == true then
+						weap_loc = UEVR_UObjectHook.remove_motion_controller_state(last_weapon)
+					end	
+					ScaleFix()
+				end
 			end
 		end
 	end
@@ -377,7 +410,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			UEVR_UObjectHook.set_disabled(true)
 			params.vr.set_aim_method(0)
 		end
-
+		
 		IntroLogo()
 		if cut_paused == true or string.find(pawn:get_full_name(), "Starting") or eval_active == true or panel_active == true or is_mouse == true or detective == true or is_input == true or is_menu == true or is_end == true or is_tut == true or is_logo == true and seq_active == false then
 			if string.find(pawn:get_full_name(), "Starting") or is_mouse == true or eval_active == true or is_end == true or is_tut == true then
@@ -388,7 +421,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 					params.vr.set_mod_value("UI_Size", "7.50")
 				else
 					if is_menu == false and is_end == false then
-						params.vr.set_mod_value("VR_DPadShiftingMethod", "0")
+						params.vr.set_mod_value("VR_DPadShiftingMethod", D_Pad_Method)
 						params.vr.set_mod_value("UI_Distance", "0.500")
 						params.vr.set_mod_value("UI_Size", "0.70")
 					else
@@ -417,7 +450,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 		if is_input == false and is_breach == true then
 			pawn.Mesh:call("SetRenderInMainPass", true)
 		end
-
+		
 		if eval_active == true then
 			params.vr.set_mod_value("VR_EnableGUI", "true")
 		end
@@ -427,7 +460,7 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 			Mactive = false
 			Playing = true
 			mDB = false
-
+			
 			ResetPlayUI()
 			params.vr.set_mod_value("VR_GhostingFix", "true")
 			UEVR_UObjectHook.set_disabled(false)
@@ -451,125 +484,125 @@ uevr.sdk.callbacks.on_pre_engine_tick(function(engine, delta)
 
 		if active_weap ~= nil and cur_weap ~= nil and not string.find(active_weap:get_full_name(), "NoWeapon") then
 			weap_loc = UEVR_UObjectHook.get_or_add_motion_controller_state(cur_weap)
-			RetRem()
-			ScaleFix()
+			
+		 	RetRem()
 
-			if Playing == true then
-				weap_loc:set_hand(1)
-				weap_loc:set_permanent(true)
-				weap_loc = UEVR_UObjectHook.remove_motion_controller_state(cur_weap)
-				weap_loc = UEVR_UObjectHook.get_or_add_motion_controller_state(cur_weap)
-				if string.find(cur_weap:get_full_name(), "BerettaAuto") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "SmgUZI") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "SigSauer") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "AKM") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-7.500, -7.500, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "Mossberg") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(0.000, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "HK21") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "BrowningM60") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "DesertEagle") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "ATGM") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "IntraTec") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "SteyrAUG") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "HKG11") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "Spas12") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-2.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "MM1GL") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "Sniper") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
-				elseif string.find(cur_weap:get_full_name(), "BarrettM82") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
+		 	if Playing == true then
+		 		weap_loc:set_hand(1)
+		 		weap_loc:set_permanent(true)
+		 		
+				last_weapon = cur_weap			
+		 		if string.find(cur_weap:get_full_name(), "BerettaAuto") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "SmgUZI") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "SigSauer") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "AKM") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-7.500, -7.500, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "Mossberg") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(0.000, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "HK21") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "BrowningM60") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "DesertEagle") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-2.500, -3.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "ATGM") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "IntraTec") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "SteyrAUG") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "HKG11") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "Spas12") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-2.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "MM1GL") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "Sniper") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-3.500, -5.000, 0.000))
+		 		elseif string.find(cur_weap:get_full_name(), "BarrettM82") then
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(-7.00, -5.000, 0.000))
 				elseif string.find(cur_weap:get_full_name(), "SterlingMk6") then
-					weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
-					weap_loc:set_location_offset(Vector3f.new(0.00, -5.00, 0.000))
-				end
-			end
-
+		 			weap_loc:set_rotation_offset(Vector3f.new(-0.00, 1.575, -0.000))
+		 			weap_loc:set_location_offset(Vector3f.new(0.00, -5.00, 0.000))	
+		 		end
+		 	end
+			
 			if eval_active == true then
 				params.vr.set_aim_method(0)
 			else
 				params.vr.set_aim_method(2)
 			end
 
-			if Playing == true and not string.find(active_weap:get_full_name(), "NoWeapon") then
-				local right_controller_index = params.vr.get_right_controller_index()
-				local right_controller_position = UEVR_Vector3f.new()
-				local right_controller_rotation = UEVR_Quaternionf.new()
-				params.vr.get_pose(right_controller_index, right_controller_position, right_controller_rotation)
+		 	if Playing == true and not string.find(active_weap:get_full_name(), "NoWeapon") then
+		 		local right_controller_index = params.vr.get_right_controller_index()
+		 		local right_controller_position = UEVR_Vector3f.new()
+		 		local right_controller_rotation = UEVR_Quaternionf.new()
+		 		params.vr.get_pose(right_controller_index, right_controller_position, right_controller_rotation)
 
-				offset[1] = right_controller_position.y - base_pos[1]
-				offset[2] = right_controller_position.z - base_pos[2]
-				adjusted_offset[2] = offset[2] + base_dif
-				if offset[1] <= -0.02 then
-					mDown = true
-				end
-				if adjusted_offset[2] <= -0.0112 then
-					mUp = true
-				end
-				if mDown == true and mUp == true and mDB == true then
-					mDownC = 0
-					mUpC = 0
-					mDown = false
-					mUp = false
-					mAttack = true
-				end
-				base_pos[1] = right_controller_position.y
-				base_pos[2] = right_controller_position.z
-				base_dif = 0
-				if offset[2] < 0 then
-					base_dif = offset[2]
-				end
-				if mUp == true then
-					mUpC = mUpC + 1
-				end
-				if mDown == true then
-					mDownC = mDownC + 1
-				end
-				if mDownC > 10 or mUpC > 10 then
-					mDownC = 0
-					mUpC = 0
-					mDown = false
-					mUp = false
-					mDB = true
-				end
+		 		offset[1] = right_controller_position.y - base_pos[1]
+		 		offset[2] = right_controller_position.z - base_pos[2]
+		 		adjusted_offset[2] = offset[2] + base_dif
+		 		if offset[1] <= -0.02 then
+		 			mDown = true
+		 		end
+		 		if adjusted_offset[2] <= -0.0112 then
+		 			mUp = true
+		 		end
+		 		if mDown == true and mUp == true and mDB == true then
+		 			mDownC = 0
+		 			mUpC = 0
+		 			mDown = false
+		 			mUp = false
+		 			mAttack = true
+		 		end
+		 		base_pos[1] = right_controller_position.y
+		 		base_pos[2] = right_controller_position.z
+		 		base_dif = 0
+		 		if offset[2] < 0 then
+		 			base_dif = offset[2]
+		 		end
+		 		if mUp == true then
+		 			mUpC = mUpC + 1
+		 		end
+		 		if mDown == true then
+		 			mDownC = mDownC + 1
+		 		end
+		 		if mDownC > 10 or mUpC > 10 then
+		 			mDownC = 0
+		 			mUpC = 0
+		 			mDown = false
+		 			mUp = false
+		 			mDB = true
+		 		end
 
-				if mAttack == true then
-					mDB = false
-				end
-			end
+		 		if mAttack == true then
+		 			mDB = false
+		 		end
+		 	end
 
-			if is_punch == true then
-				pawn.Mesh:call("SetRenderInMainPass", true)
-			end
-		end
+		 	if is_punch == true then
+		 		pawn.Mesh:call("SetRenderInMainPass", true)
+		 	end
+		 end
 	end
 
 	alt_time = world.GameState.ReplicatedWorldTimeSecondsDouble
@@ -634,7 +667,7 @@ uevr.sdk.callbacks.on_xinput_get_state(function(retval, user_index, state)
 			end
 		end
 
-		if pawn ~= nil then
+		if pawn ~= nil and Enable_Scan_Fix == true then
 			if active_weap == nil or string.find(active_weap_name, "NoWeapon") then
 				if Playing == true then
 					if state.Gamepad.bLeftTrigger ~= 0 then
